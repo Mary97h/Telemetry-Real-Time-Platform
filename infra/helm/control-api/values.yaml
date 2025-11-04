@@ -1,0 +1,57 @@
+image:
+  repository: yourorg/control-api
+  tag: latest
+  pullPolicy: IfNotPresent
+
+replicas: 2
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "512Mi"
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+
+env:
+  KAFKA_BOOTSTRAP_SERVERS: kafka-cluster-kafka-bootstrap.kafka:9092
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: "5432"
+  POSTGRES_USER: telemetry
+  POSTGRES_DB: telemetry_db
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+
+secrets:
+  POSTGRES_PASSWORD: telemetry123
+  # Add more secrets as needed
+
+postgres:
+  image: postgres:16
+  resources:
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+  storage:
+    size: 10Gi
+    class: standard
+
+redis:
+  image: redis:7
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+  storage:
+    size: 5Gi
+    class: standard
+
+service:
+  type: ClusterIP
+  port: 8000

@@ -1,0 +1,55 @@
+# libs/schemas/avro/AggregatedMetric.avsc
+{
+  "type": "record",
+  "name": "AggregatedMetric",
+  "namespace": "com.telemetry.avro",
+  "doc": "Aggregated metrics from windowed processing",
+  "fields": [
+    {
+      "name": "device_id",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    },
+    {
+      "name": "window_start",
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    },
+    {
+      "name": "window_end",
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    },
+    {
+      "name": "avg_metrics",
+      "type": {
+        "type": "map",
+        "values": "double"
+      }
+    },
+    {
+      "name": "min_metrics",
+      "type": {
+        "type": "map",
+        "values": "double"
+      },
+      "default": {}
+    },
+    {
+      "name": "max_metrics",
+      "type": {
+        "type": "map",
+        "values": "double"
+      },
+      "default": {}
+    },
+    {
+      "name": "count",
+      "type": "long"
+    }
+  ]
+}

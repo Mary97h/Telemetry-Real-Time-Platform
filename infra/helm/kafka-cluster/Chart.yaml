@@ -1,0 +1,10 @@
+apiVersion: v2
+name: kafka-cluster
+description: Kafka cluster deployment using Strimzi operator
+version: 1.0.0
+appVersion: "3.6.0"
+type: application
+dependencies:
+- name: strimzi-kafka-operator
+  version: "0.48.x"
+  repository: "https://strimzi.io/charts/"

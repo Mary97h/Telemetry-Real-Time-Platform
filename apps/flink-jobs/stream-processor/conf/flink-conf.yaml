@@ -1,0 +1,17 @@
+jobmanager.memory.heap.size: 2048m
+taskmanager.memory.task.heap.size: 4096m
+taskmanager.numberOfTaskSlots: 4
+parallelism.default: 16
+state.backend.type: rocksdb
+state.checkpoints.dir: s3://flink-checkpoints/<job-name>/  # Replace <job-name> per job 
+state.backend.incremental: true
+execution.checkpointing.interval: 60000
+execution.checkpointing.mode: EXACTLY_ONCE
+execution.checkpointing.timeout: 120000
+restart-strategy.type: failure-rate
+restart-strategy.failure-rate.max-failures-per-interval: 3
+restart-strategy.failure-rate.failure-rate-interval: 300000
+restart-strategy.failure-rate.delay: 10000
+metrics.reporters: prom
+metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
+metrics.reporter.prom.port: 9249

@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: telemetry
+  labels:
+    name: telemetry
+    purpose: production
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kafka
+  labels:
+    name: kafka
+    purpose: messaging
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flink
+  labels:
+    name: flink
+    purpose: processing
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: observability
+  labels:
+    name: observability
+    purpose: monitoring
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: control-api
+  labels:
+    name: control-api
+    purpose: api

@@ -1,0 +1,84 @@
+flinkDeployment:
+  name: flink-stream-processor
+  namespace: flink
+  
+jobManager:
+  replicas: 2  # HA mode
+  resources:
+    requests:
+      memory: "4Gi"
+      cpu: "2"
+    limits:
+      memory: "6Gi"
+      cpu: "3"
+
+taskManager:
+  replicas: 8
+  resources:
+    requests:
+      memory: "8Gi"
+      cpu: "4"
+    limits:
+      memory: "12Gi"
+      cpu: "6"
+  taskSlots: 4
+
+flinkConfiguration:
+  taskmanager.numberOfTaskSlots: "4"
+  state.backend: rocksdb
+  state.backend.incremental: "true"
+  state.checkpoints.dir: "s3://flink-checkpoints/stream-processor"
+  state.savepoints.dir: "s3://flink-savepoints/stream-processor"
+  execution.checkpointing.interval: "60s"
+  execution.checkpointing.mode: EXACTLY_ONCE
+  execution.checkpointing.timeout: "2min"
+  restart-strategy: failure-rate
+  restart-strategy.failure-rate.max-failures-per-interval: "3"
+  restart-strategy.failure-rate.failure-rate-interval: "5min"
+  restart-strategy.failure-rate.delay: "10s"
+  
+job:
+  jarURI: local:///opt/flink/usrlib/stream-processor.jar
+  entryClass: com.telemetry.flink.StreamProcessorJob
+  parallelism: 16
+  upgradeMode: savepoint
+  savepointTriggerNonce: 0
+
+env:
+  - name: KAFKA_BOOTSTRAP_SERVERS
+    value: "kafka-cluster-kafka-bootstrap.kafka:9092"
+  - name: SCHEMA_REGISTRY_URL
+    value: "http://schema-registry.kafka:8081"
+  - name: POSTGRES_HOST
+    value: "postgres.control-api"
+  - name: POSTGRES_PORT
+    value: "5432"
+  - name: REDIS_HOST
+    value: "redis.control-api"
+  - name: REDIS_PORT
+    value: "6379"
+  - name: S3_BUCKET
+    value: "telemetry-data"
+  - name: S3_ENDPOINT
+    value: "http://minio:9000"
+
+serviceAccount:
+  create: true
+  name: flink-stream-processor
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9249"
+  prometheus.io/path: "/metrics"
+
+autoscaling:
+  enabled: true
+  minReplicas: 4
+  maxReplicas: 32
+  metrics:
+    - type: kafka
+      metadata:
+        bootstrapServers: "kafka-cluster-kafka-bootstrap.kafka:9092"
+        consumerGroup: "stream-processor"
+        topic: "telemetry-raw"
+        lagThreshold: "10000"

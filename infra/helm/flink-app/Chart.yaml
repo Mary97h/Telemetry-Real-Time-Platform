@@ -1,0 +1,10 @@
+apiVersion: v2
+name: flink-app
+description: Helm chart for Flink telemetry jobs
+type: application
+version: 1.0.0
+appVersion: "1.18"
+dependencies:
+- name: flink-operator
+  version: "1.x"
+  repository: "https://apache.github.io/flink-kubernetes-operator"

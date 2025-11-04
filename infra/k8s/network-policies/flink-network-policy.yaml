@@ -1,0 +1,71 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: flink-allow-internal
+  namespace: flink
+spec:
+  podSelector:
+    matchLabels:
+      app: flink
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: telemetry
+    - namespaceSelector:
+        matchLabels:
+          name: control-api
+    - podSelector:
+        matchLabels:
+          component: jobmanager
+    ports:
+    - protocol: TCP
+      port: 6123  # JobManager RPC
+    - protocol: TCP
+      port: 6122  # TaskManager RPC
+    - protocol: TCP
+      port: 6121  # Blob server
+    - protocol: TCP
+      port: 8081  # Web UI
+    - protocol: TCP
+      port: 9249  # Metrics
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kafka
+      podSelector:
+        matchLabels:
+          app: kafka
+    ports:
+    - protocol: TCP
+      port: 9092  # Kafka bootstrap
+    - protocol: TCP
+      port: 9093  # TLS
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: control-api
+      podSelector:
+        matchLabels:
+          app: postgres
+    ports:
+    - protocol: TCP
+      port: 5432
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: control-api
+      podSelector:
+        matchLabels:
+          app: redis
+    ports:
+    - protocol: TCP
+      port: 6379
+  - to: []  # Allow DNS
+    ports:
+    - protocol: UDP
+      port: 53

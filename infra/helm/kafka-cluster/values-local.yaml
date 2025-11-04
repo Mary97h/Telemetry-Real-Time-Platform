@@ -1,0 +1,87 @@
+cluster:
+  name: kafka-cluster
+  namespace: kafka
+  
+kafka:
+  replicas: 1
+  version: 3.6.0
+  
+  config:
+    offsets.topic.replication.factor: 1
+    transaction.state.log.replication.factor: 1
+    transaction.state.log.min.isr: 1
+    default.replication.factor: 1
+    min.insync.replicas: 1
+    auto.create.topics.enable: true
+    log.retention.hours: 168
+    compression.type: lz4
+    
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "1"
+    limits:
+      memory: "4Gi"
+      cpu: "2"
+  
+  storage:
+    type: persistent-claim
+    size: 20Gi
+    class: standard
+    deleteClaim: false
+  
+  jvmOptions:
+    -Xms: 1g
+    -Xmx: 1g
+    -XX:+UseG1GC: true
+
+zookeeper:
+  replicas: 1
+  
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1"
+  
+  storage:
+    type: persistent-claim
+    size: 10Gi
+    class: standard
+    deleteClaim: false
+
+entityOperator:
+  topicOperator:
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "200m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  userOperator:
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "200m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+cruiseControl:
+  enabled: false
+
+kafkaExporter:
+  enabled: true
+  groupRegex: ".*"
+  topicRegex: ".*"
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"

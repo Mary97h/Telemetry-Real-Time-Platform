@@ -1,0 +1,54 @@
+{
+  "type": "record",
+  "name": "TelemetryEvent",
+  "namespace": "com.telemetry.avro",
+  "doc": "Raw telemetry event from IoT devices and sensors",
+  "fields": [
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "Unique identifier for this event"
+    },
+    {
+      "name": "device_id",
+      "type": "string",
+      "doc": "Source device identifier"
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Event timestamp in milliseconds since epoch"
+    },
+    {
+      "name": "sensor_type",
+      "type": "string",
+      "doc": "Type of sensor (temperature, pressure, vibration, etc.)"
+    },
+    {
+      "name": "value",
+      "type": "double",
+      "doc": "Sensor reading value"
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "doc": "Unit of measurement (celsius, pascal, hz, etc.)"
+    },
+    {
+      "name": "quality",
+      "type": ["null", "int"],
+      "default": null,
+      "doc": "Data quality indicator (0-100)"
+    },
+    {
+      "name": "tags",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Additional metadata tags"
+    }
+  ]
+}

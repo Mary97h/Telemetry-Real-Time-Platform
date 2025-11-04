@@ -1,0 +1,39 @@
+# libs/schemas/protobuf/control_command.proto
+syntax = "proto3";
+
+package com.telemetry.protobuf;
+
+import "google/protobuf/timestamp.proto";
+
+enum CommandType {
+  THROTTLE = 0;
+  SCALE = 1;
+  RESTART = 2;
+  CONFIG_UPDATE = 3;
+  EMERGENCY_STOP = 4;
+}
+
+enum Priority {
+  LOW = 0;
+  NORMAL = 1;
+  HIGH = 2;
+  CRITICAL = 3;
+}
+
+message RollbackConfig {
+  bool enabled = 1;
+  int32 timeout_seconds = 2;
+  map<string, string> previous_state = 3;
+}
+
+message ControlCommand {
+  string command_id = 1;
+  string target_id = 2;
+  CommandType command_type = 3;
+  map<string, string> parameters = 4;
+  google.protobuf.Timestamp timestamp = 5;
+  google.protobuf.Timestamp expiry = 6;
+  Priority priority = 7;
+  RollbackConfig rollback_config = 8;
+  bool dry_run = 9;
+}

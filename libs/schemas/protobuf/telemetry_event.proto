@@ -1,0 +1,17 @@
+# libs/schemas/protobuf/telemetry_event.proto
+syntax = "proto3";
+
+package com.telemetry.protobuf;
+
+import "google/protobuf/timestamp.proto";
+
+message TelemetryEvent {
+  string event_id = 1;
+  string device_id = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  string sensor_type = 4;
+  double value = 5;
+  string unit = 6;
+  int32 quality = 7;
+  map<string, string> tags = 8;
+}

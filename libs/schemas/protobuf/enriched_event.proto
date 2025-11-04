@@ -1,0 +1,26 @@
+# libs/schemas/protobuf/enriched_event.proto
+syntax = "proto3";
+
+package com.telemetry.protobuf;
+
+import "google/protobuf/timestamp.proto";
+
+message DeviceMetadata {
+  string location = 1;
+  string zone = 2;
+  string model = 3;
+  string firmware_version = 4;
+}
+
+message EnrichedEvent {
+  string event_id = 1;
+  string device_id = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  string sensor_type = 4;
+  double value = 5;
+  string unit = 6;
+  DeviceMetadata device_metadata = 7;
+  google.protobuf.Timestamp processed_timestamp = 8;
+  double anomaly_score = 9;
+  double quality_score = 10;
+}

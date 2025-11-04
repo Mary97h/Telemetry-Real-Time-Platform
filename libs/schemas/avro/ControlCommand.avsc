@@ -1,0 +1,87 @@
+{
+  "type": "record",
+  "name": "ControlCommand",
+  "namespace": "com.telemetry.avro",
+  "doc": "Control command for adaptive system adjustments",
+  "fields": [
+    {
+      "name": "command_id",
+      "type": "string",
+      "doc": "Unique command identifier for idempotency"
+    },
+    {
+      "name": "target_id",
+      "type": "string",
+      "doc": "Target device/system identifier"
+    },
+    {
+      "name": "command_type",
+      "type": {
+        "type": "enum",
+        "name": "CommandType",
+        "symbols": ["THROTTLE", "SCALE", "RESTART", "CONFIG_UPDATE", "EMERGENCY_STOP"]
+      }
+    },
+    {
+      "name": "parameters",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "doc": "Command-specific parameters"
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    },
+    {
+      "name": "expiry",
+      "type": ["null", "long"],
+      "default": null,
+      "logicalType": "timestamp-millis",
+      "doc": "Command expiration timestamp"
+    },
+    {
+      "name": "priority",
+      "type": {
+        "type": "enum",
+        "name": "Priority",
+        "symbols": ["LOW", "NORMAL", "HIGH", "CRITICAL"]
+      },
+      "default": "NORMAL"
+    },
+    {
+      "name": "rollback_config",
+      "type": ["null", {
+        "type": "record",
+        "name": "RollbackConfig",
+        "fields": [
+          {
+            "name": "enabled",
+            "type": "boolean"
+          },
+          {
+            "name": "timeout_seconds",
+            "type": "int"
+          },
+          {
+            "name": "previous_state",
+            "type": {
+              "type": "map",
+              "values": "string"
+            },
+            "default": {}
+          }
+        ]
+      }],
+      "default": null
+    },
+    {
+      "name": "dry_run",
+      "type": "boolean",
+      "default": false,
+      "doc": "If true, simulate without executing"
+    }
+  ]
+}

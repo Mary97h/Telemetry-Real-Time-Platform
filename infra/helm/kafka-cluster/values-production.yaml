@@ -1,0 +1,131 @@
+cluster:
+  name: kafka-cluster
+  namespace: kafka
+  
+kafka:
+  replicas: 3
+  version: 3.6.0
+  
+  config:
+    offsets.topic.replication.factor: 3
+    transaction.state.log.replication.factor: 3
+    transaction.state.log.min.isr: 2
+    default.replication.factor: 3
+    min.insync.replicas: 2
+    auto.create.topics.enable: false
+    log.retention.hours: 168
+    compression.type: lz4
+    num.network.threads: 8
+    num.io.threads: 16
+    socket.send.buffer.bytes: 102400
+    socket.receive.buffer.bytes: 102400
+    socket.request.max.bytes: 104857600
+    
+  resources:
+    requests:
+      memory: "8Gi"
+      cpu: "4"
+    limits:
+      memory: "12Gi"
+      cpu: "6"
+  
+  storage:
+    type: persistent-claim
+    size: 500Gi
+    class: fast-ssd
+    deleteClaim: false
+  
+  jvmOptions:
+    -Xms: 6g
+    -Xmx: 6g
+    -XX:+UseG1GC: true
+    -XX:MaxGCPauseMillis: 20
+    -XX:InitiatingHeapOccupancyPercent: 35
+    -XX:G1HeapRegionSize: 16M
+
+  rack:
+    topologyKey: topology.kubernetes.io/zone
+
+  metricsConfig:
+    type: jmxPrometheusExporter
+    valueFrom:
+      configMapKeyRef:
+        name: kafka-metrics
+        key: kafka-metrics-config.yml
+
+zookeeper:
+  replicas: 3
+  
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "1"
+    limits:
+      memory: "4Gi"
+      cpu: "2"
+  
+  storage:
+    type: persistent-claim
+    size: 50Gi
+    class: fast-ssd
+    deleteClaim: false
+
+  metricsConfig:
+    type: jmxPrometheusExporter
+    valueFrom:
+      configMapKeyRef:
+        name: kafka-metrics
+        key: zookeeper-metrics-config.yml
+
+entityOperator:
+  topicOperator:
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "200m"
+      limits:
+        memory: "1Gi"
+        cpu: "1"
+  
+  userOperator:
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "200m"
+      limits:
+        memory: "1Gi"
+        cpu: "1"
+
+cruiseControl:
+  enabled: true
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "1"
+    limits:
+      memory: "4Gi"
+      cpu: "2"
+
+kafkaExporter:
+  enabled: true
+  groupRegex: ".*"
+  topicRegex: ".*"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "200m"
+    limits:
+      memory: "1Gi"
+      cpu: "1"
+
+# TLS configuration
+tls:
+  enabled: true
+  authentication:
+    type: scram-sha-512
+
+# Authorization
+authorization:
+  type: simple
+  superUsers:
+    - admin

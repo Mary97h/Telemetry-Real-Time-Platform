@@ -1,0 +1,60 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kafka-allow-internal
+  namespace: kafka
+spec:
+  podSelector:
+    matchLabels:
+      app: kafka
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: flink
+    - namespaceSelector:
+        matchLabels:
+          name: telemetry
+    - namespaceSelector:
+        matchLabels:
+          name: control-api
+    - podSelector:
+        matchLabels:
+          strimzi.io/kind: Kafka
+    ports:
+    - protocol: TCP
+      port: 9092  # Plain
+    - protocol: TCP
+      port: 9093  # TLS
+    - protocol: TCP
+      port: 9404  # JMX exporter
+  - from:
+    - podSelector:
+        matchLabels:
+          strimzi.io/name: zookeeper
+    ports:
+    - protocol: TCP
+      port: 2181  # ZK client
+    - protocol: TCP
+      port: 2888  # ZK server
+    - protocol: TCP
+      port: 3888  # ZK election
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          strimzi.io/name: zookeeper
+    ports:
+    - protocol: TCP
+      port: 2181
+    - protocol: TCP
+      port: 2888
+    - protocol: TCP
+      port: 3888
+  - to: []  # Allow DNS
+    ports:
+    - protocol: UDP
+      port: 53

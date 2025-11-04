@@ -1,0 +1,32 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: {{ .Release.Name }}-telemetry
+spec:
+  image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+  flinkVersion: {{ .Values.flinkVersion }}
+  serviceAccount: {{ .Values.serviceAccount.name }}
+  podTemplate:
+    metadata:
+      annotations:
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+  jobManager:
+    replicas: {{ .Values.jobManager.replicas }}
+    resource:
+      cpu: {{ .Values.jobManager.resources.requests.cpu }}
+      memory: {{ .Values.jobManager.resources.requests.memory }}
+  taskManager:
+    replicas: {{ .Values.taskManager.replicas }}
+    resource:
+      cpu: {{ .Values.taskManager.resources.requests.cpu }}
+      memory: {{ .Values.taskManager.resources.requests.memory }}
+  flinkConfiguration:
+    {{- toYaml .Values.flinkConfiguration | nindent 4 }}
+  job:
+    jarURI: {{ .Values.job.jarURI }}
+    entryClass: {{ .Values.job.entryClass }}
+    parallelism: {{ .Values.job.parallelism }}
+    upgradeMode: {{ .Values.job.upgradeMode }}
+  envFrom:
+  - configMapRef:
+      name: {{ .Release.Name }}-env

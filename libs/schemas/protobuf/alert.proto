@@ -1,0 +1,32 @@
+# libs/schemas/protobuf/alert.proto
+syntax = "proto3";
+
+package com.telemetry.protobuf;
+
+import "google/protobuf/timestamp.proto";
+
+enum AlertType {
+  THRESHOLD = 0;
+  PATTERN = 1;
+  ANOMALY = 2;
+  SYSTEM = 3;
+  COMPLIANCE = 4;
+}
+
+enum Severity {
+  INFO = 0;
+  WARNING = 1;
+  CRITICAL = 2;
+}
+
+message Alert {
+  string alert_id = 1;
+  AlertType alert_type = 2;
+  Severity severity = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  repeated string device_ids = 5;
+  string title = 6;
+  string description = 7;
+  map<string, string> metadata = 8;
+  string recommended_action = 9;
+}

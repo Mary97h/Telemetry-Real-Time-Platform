@@ -1,0 +1,17 @@
+# libs/schemas/protobuf/aggregated_metric.proto
+syntax = "proto3";
+
+package com.telemetry.protobuf;
+
+import "google/protobuf/timestamp.proto";
+
+message AggregatedMetric {
+  string device_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  google.protobuf.Timestamp window_start = 3;
+  google.protobuf.Timestamp window_end = 4;
+  map<string, double> avg_metrics = 5;
+  map<string, double> min_metrics = 6;
+  map<string, double> max_metrics = 7;
+  int64 count = 8;
+}

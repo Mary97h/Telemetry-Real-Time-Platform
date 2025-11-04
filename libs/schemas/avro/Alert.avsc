@@ -1,0 +1,66 @@
+{
+  "type": "record",
+  "name": "Alert",
+  "namespace": "com.telemetry.avro",
+  "doc": "System alert generated from pattern detection or anomalies",
+  "fields": [
+    {
+      "name": "alert_id",
+      "type": "string"
+    },
+    {
+      "name": "alert_type",
+      "type": {
+        "type": "enum",
+        "name": "AlertType",
+        "symbols": ["THRESHOLD", "PATTERN", "ANOMALY", "SYSTEM", "COMPLIANCE"]
+      }
+    },
+    {
+      "name": "severity",
+      "type": {
+        "type": "enum",
+        "name": "Severity",
+        "symbols": ["INFO", "WARNING", "CRITICAL"]
+      }
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    },
+    {
+      "name": "device_ids",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "doc": "List of affected devices"
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "doc": "Short alert title"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "doc": "Detailed alert description"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Additional context and metrics"
+    },
+    {
+      "name": "recommended_action",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Suggested remediation action"
+    }
+  ]
+}

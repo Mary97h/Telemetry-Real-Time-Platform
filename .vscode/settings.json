@@ -1,0 +1,8 @@
+{
+    "python.analysis.extraPaths": [
+        "./apps/control-api/routes",
+        "./libs/schemas/avro/generated/python"
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.pythonProjects": []
+}

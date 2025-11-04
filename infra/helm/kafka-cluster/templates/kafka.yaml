@@ -1,0 +1,51 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: {{ .Values.cluster.name }}
+  namespace: {{ .Values.cluster.namespace }}
+spec:
+  kafka:
+    version: {{ .Values.kafka.version }}
+    replicas: {{ .Values.kafka.replicas }}
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: {{ .Values.tls.enabled }}
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+        authentication:
+          type: {{ .Values.tls.authentication.type }}
+      - name: external
+        port: 9094
+        type: loadbalancer
+        tls: true
+        authentication:
+          type: scram-sha-512
+    config: {{ toYaml .Values.kafka.config | nindent 6 }}
+    storage: {{ toYaml .Values.kafka.storage | nindent 6 }}
+    resources: {{ toYaml .Values.kafka.resources | nindent 6 }}
+    jvmOptions: {{ toYaml .Values.kafka.jvmOptions | nindent 6 }}
+    rack: {{ toYaml .Values.kafka.rack | nindent 6 }}
+    metricsConfig: {{ toYaml .Values.kafka.metricsConfig | nindent 6 }}
+    authorization:
+      type: {{ .Values.authorization.type }}
+      superUsers: {{ toYaml .Values.authorization.superUsers | nindent 8 }}
+  zookeeper:
+    replicas: {{ .Values.zookeeper.replicas }}
+    storage: {{ toYaml .Values.zookeeper.storage | nindent 6 }}
+    resources: {{ toYaml .Values.zookeeper.resources | nindent 6 }}
+    metricsConfig: {{ toYaml .Values.zookeeper.metricsConfig | nindent 6 }}
+  entityOperator:
+    topicOperator: {{ toYaml .Values.entityOperator.topicOperator | nindent 6 }}
+    userOperator: {{ toYaml .Values.entityOperator.userOperator | nindent 6 }}
+  cruiseControl:
+    enabled: {{ .Values.cruiseControl.enabled }}
+    resources: {{ toYaml .Values.cruiseControl.resources | nindent 6 }}
+  kafkaExporter:
+    enabled: {{ .Values.kafkaExporter.enabled }}
+    groupRegex: {{ .Values.kafkaExporter.groupRegex }}
+    topicRegex: {{ .Values.kafkaExporter.topicRegex }}
+    resources: {{ toYaml .Values.kafkaExporter.resources | nindent 6 }}
